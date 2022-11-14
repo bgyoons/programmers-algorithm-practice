@@ -5,7 +5,7 @@ let totalData = []; // 총 콘텐츠
 let totalPage = 1; // 총 페이지
 
 // 숫자 페이징
-const pageBtn = (e, cur) => {
+const pageBtn = (e) => {
   let currentPage = document.getElementById(page)
   if (currentPage) currentPage.classList.remove('current')
 
