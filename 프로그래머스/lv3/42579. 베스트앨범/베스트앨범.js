@@ -1,17 +1,17 @@
 function solution(genres, plays) {
     var answer = [];
     let musicInfo = []; // 음악 정보
-    let generesCount = {} // 장르별 재생수
+    let genresCount = {} // 장르별 재생수
     let genresPlayRank = [...new Set(genres)]; // 장르 재생수 순위
     
     // 장르 재생 랭킹
     genres.forEach((ele, idx) => {
-        if (generesCount[ele]) {
-            generesCount[ele] += plays[idx]
-        } else generesCount[ele] = plays[idx]
+        if (genresCount[ele]) {
+            genresCount[ele] += plays[idx]
+        } else genresCount[ele] = plays[idx]
     })
     
-    genresPlayRank = genresPlayRank.map((ele, idx) => [ele, generesCount[ele]])
+    genresPlayRank = genresPlayRank.map((ele, idx) => [ele, genresCount[ele]])
                         .sort((a, b) => b[1] - a[1])
                         .map(ele => ele[0])
     
