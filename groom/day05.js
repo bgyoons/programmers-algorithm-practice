@@ -12,7 +12,7 @@ rl.on('line', (line) => {
 });
 
 rl.on('close', () => {
-  const [count, index] = input[0].split(' ').map(ele => +ele);
+  const index = +input[0].split(' ')[1];
   const numbers = input[1].split(' ').map((ele, idx, arr) => {
     let num = +ele;
     let count = 0;
