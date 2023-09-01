@@ -6,14 +6,10 @@ let rl = readline.createInterface({
   output: process.stdout,
 });
 let input = [];
-let N, M, K;
+let M, K;
 rl.on('line', (line) => {
   input.push(line.split(' ').map(Number));
-  if (input.length === 1) {
-    N = input[0][0];
-    M = input[0][1];
-    K = input[0][2];
-  }
+  if (input.length === 1) [_, M, K] = input[0];
   if (input.length === M + 1) {
     input.shift();
     rl.close();
@@ -21,29 +17,35 @@ rl.on('line', (line) => {
 });
 
 rl.on('close', () => {
-  let graph = Array(N).fill('').map(e => Array(N).fill(0));
-  input.forEach(([row, col]) => {
-    graph[row - 1][col - 1] = 1;
-    graph[col - 1][row - 1] = 1;
+  let graph = {};
+  input.forEach(([s, e]) => {
+    if (graph[s]) graph[s].push(e);
+    else graph[s] = [e];
+    if (graph[e]) graph[e].push(s);
+    else graph[e] = [s];
   })
 
-  let x = K - 1;
-  let count = 1;
-  let visitedNode = [K - 1];
-  let flag = true;
-
-  while (flag) {
-    for (let i = 0; i < N; i++) {
-      if (!visitedNode.includes(i) && graph[x][i]) {
-        visitedNode.push(i);
-        count += 1;
-        x = i;
-      } else if (i === N - 1) {
-        flag = false;
-        break;
-      }
-    }
+  for (let i in graph) {
+    graph[i].sort((a, b) => a - b);
   }
 
-  console.log(count, x + 1);
+  let count = 1;
+  let cur = K;
+  let next = K;
+
+  while (next) {
+    if (graph[cur]) {
+      for (let i of graph[cur]) {
+        if (graph[i]) {
+          delete graph[cur];
+          cur = i;
+          next = cur;
+          count += 1;
+          break;
+        } else next = 0;
+      }
+    } else break;
+  }
+
+  console.log(count, cur);
 })
