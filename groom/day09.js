@@ -6,35 +6,25 @@ let rl = readline.createInterface({
   output: process.stdout,
 });
 let input = [];
+let N, K;
 rl.on('line', (line) => {
   input.push(line.split(' '));
-  const [N, K] = input[0].map(Number);
+  if (input.length === 1) [N, K] = input[0].map(Number);
   if (input.length === N + K + 1) rl.close();
 });
 
 rl.on('close', () => {
-  const N = +input[0][0];
-  const groundState = input.slice(1, 5);
-  let ground = groundState.map(arr => arr.map(ele => 0));
-  let bombs = [];
+  const position = input.slice(N + 1).map(arr => arr.map(e => (+e) - 1));
+  const score = input.slice(1, N + 1).map(arr => arr.map(e => e === '@' ? 2 : e === '#' ? 0 : 1));
+  let ground = Array(N).fill('').map(_ => Array(N).fill(0));
 
-  input.slice(5).forEach(position => {
-    const [y, x] = position.map(ele => (+ele) - 1);
-    bombs = bombs.concat([[y, x], [y - 1, x], [y, x - 1], [y + 1, x], [y, x + 1]]);
+  position.forEach(([y, x]) => {
+    ground[y][x] += score[y][x];
+    if (y > 0) ground[y - 1][x] += score[y - 1][x];
+    if (x > 0) ground[y][x - 1] += score[y][x - 1];
+    if (y < N - 1) ground[y + 1][x] += score[y + 1][x];
+    if (x < N - 1) ground[y][x + 1] += score[y][x + 1];
   })
 
-  for (let bomb of bombs) {
-    const [row, col] = bomb;
-    if (row > -1 && row < N && col > -1 && col < N) {
-      if (groundState[row][col] === '0') ground[row][col] += 1;
-      else if (groundState[row][col] === '@') ground[row][col] += 2;
-    }
-  }
-
-  let result = ground.flat()[0];
-  for (let i = 0; i < ground.flat().length; i++) {
-    if (result < ground.flat()[i]) result = ground.flat()[i];
-  }
-
-  console.log(result);
+  console.log(Math.max(...ground.flat()));
 })
