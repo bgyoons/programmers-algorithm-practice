@@ -1,28 +1,30 @@
 const fs = require("fs");
 let input = fs.readFileSync("dev/stdin").toString().trim().split("\n");
 
-const [number, , ...pairs] = input;
-const graph = new Array(+number + 1).fill().map(() => new Array());
-pairs.forEach((pair) => {
-  const [from, to] = pair.split(" ").map(Number);
-  graph[from].push(to);
-  graph[to].push(from);
-});
-
-let answer = 0;
-const visited = new Array(+number + 1).fill(false);
-const queue = [1];
-
-while (queue.length) {
-  const cur = queue.shift();
-
-  if (visited[cur]) continue;
-
-  visited[cur] = true;
-  answer += 1;
-
-  for (const computer of graph[cur]) {
-    if (!visited[computer]) queue.push(computer);
-  }
+const [computerCount, connectCount] = input.slice(0, 2).map(Number);
+const graph = new Array(computerCount + 1).fill().map(() => new Array());
+for (const connect of input.slice(2)) {
+  const [x, y] = connect.split(" ").map(Number);
+  graph[x].push(y);
+  graph[y].push(x);
 }
-console.log(answer - 1);
+
+const visited = new Array(computerCount + 1).fill(false);
+visited[1] = true;
+const stack = [1];
+let answer = -1;
+
+const dfs = () => {
+  if (!stack.length) return;
+  answer += 1;
+  const cur = stack.shift();
+  for (const computer of graph[cur]) {
+    if (visited[computer]) continue;
+    stack.push(computer);
+    visited[computer] = true;
+  }
+  dfs();
+};
+dfs();
+
+console.log(answer);
