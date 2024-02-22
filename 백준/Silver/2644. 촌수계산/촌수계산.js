@@ -12,12 +12,8 @@ for (const pair of input.slice(3)) {
 }
 
 let answer;
-let isMatched = false;
-const stack = [a];
 const visited = new Array(n + 1).fill(false);
-const dfs = (level) => {
-  const cur = stack.shift();
-
+const dfs = (cur, level) => {
   if (visited[cur]) return;
   visited[cur] = true;
 
@@ -28,11 +24,10 @@ const dfs = (level) => {
       return;
     }
     if (visited[v]) continue;
-    stack.push(v);
-    dfs(level + 1);
+    dfs(v, level + 1);
   }
 };
 
-dfs(1);
-if (isMatched) console.log(answer);
+dfs(a, 1);
+if (answer) console.log(answer);
 else console.log(-1);
